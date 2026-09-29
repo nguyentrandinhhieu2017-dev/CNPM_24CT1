@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sàn Đấu Giá Công Nghệ - LiveTech Auction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            color: white; padding: 60px 0; border-radius: 0 0 20px 20px; margin-bottom: 40px;
+        }
+        .card-product {
+            transition: transform 0.3s; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .card-product:hover { transform: translateY(-5px); }
+    </style>
+	<style>
+	    /* 1. Hiệu ứng nổi 3D cho Khung Sản Phẩm */
+	    .card {
+	        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease !important;
+	        border: 1px solid #eaeaea !important;
+	        border-radius: 12px !important;
+	        overflow: hidden; /* Giữ ảnh không bị tràn khi phóng to */
+	        background-color: #ffffff;
+	    }
+	    
+	    .card:hover {
+	        transform: translateY(-12px) scale(1.02) !important;
+	        box-shadow: 0 15px 30px rgba(0, 114, 255, 0.15) !important;
+	        z-index: 10;
+	        border-color: #00c6ff !important;
+	    }
+
+	    /* 2. Hiệu ứng thu phóng Ảnh mượt mà */
+	    .card-img-top {
+	        transition: transform 0.5s ease !important;
+	    }
+	    
+	    .card:hover .card-img-top {
+	        transform: scale(1.08) !important; /* Phóng to ảnh lên 8% */
+	    }
+
+	    /* 3. Nút bấm Đấu Giá kiểu Neon */
+	    .btn-primary {
+	        background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%) !important;
+	        border: none !important;
+	        transition: all 0.3s ease !important;
+	        font-weight: bold;
+	    }
+	    
+	    .btn-primary:hover {
+	        box-shadow: 0 0 15px rgba(0, 198, 255, 0.6) !important;
+	        transform: translateY(-2px) !important;
+	    }
+	    
+	    .btn-primary:active {
+	        transform: translateY(1px) !important;
+	    }
+	</style>
+</head>
+<body>
+
+    <!-- Thanh điều hướng (Navbar) thông minh -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">⚡ LiveTech</a>
+            
+            <!--Form Tìm kiếm ngay giữa Navbar -->
+            <form class="d-flex mx-lg-auto my-2 my-lg-0" th:action="@{/}" method="get" style="width: 100%; max-width: 400px;">
+                <input class="form-control me-2" type="search" name="keyword" th:value="${keyword}" placeholder="Nhập tên thiết bị bạn muốn tìm..." aria-label="Search">
+                <button class="btn btn-warning fw-bold" type="submit">Tìm</button>
+            </form>
+
+            <div class="d-flex align-items-center">
+                <!-- Hiển thị khi CHƯA đăng nhập -->
+                <th:block th:if="${session.loggedInUser == null}">
+                    <a href="/login" class="btn btn-outline-light me-2">Đăng Nhập</a>
+                    <a href="/register" class="btn btn-primary">Đăng Ký</a>
+                </th:block>
+
+                <!-- Hiển thị khi ĐÃ đăng nhập -->
+                <th:block th:if="${session.loggedInUser != null}">
+                    <span class="text-white me-3 d-none d-md-inline">
+                        Xin chào, <strong th:text="${session.loggedInUser.fullName}">Tên User</strong>!
+                    </span>
+                    <a href="/logout" class="btn btn-danger btn-sm fw-bold">Đăng Xuất</a>
+                </th:block>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Sàn Đấu Giá Thiết Bị Công Nghệ Trực Tuyến</h1>
+            <p class="lead mt-3">Săn laptop, điện thoại đỉnh cao với cơ chế đấu giá thời gian thực cực kỳ hấp dẫn!</p>
+            <a href="#products" class="btn btn-light btn-lg mt-3 fw-bold text-primary">Khám Phá Phòng Đấu Giá</a>
+        </div>
+    </div>
+
+    <!-- Danh mục eBay Style -->
+	<div class="container ebay-category-section">
+	    <h3 class="ebay-category-title">Khám phá theo danh mục</h3>
+	    
+	    <div class="ebay-category-container">
+	        <a href="/category/laptops" class="ebay-category-item">
+	            <div class="ebay-category-image-box">
+	                <img src="https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_2__11_1.png?_gl=1*89mt4x*_gcl_aw*R0NMLjE3ODc3MTMxMDEuQ2p3S0NBanctclRVQmhBaUVpd0FEdjhnQkNNRk84cjhLVGZ5eXdVbDZsLTV5UUV5aHNtc21nOEFGem1YOVN2LVcxb1Uwc2JpV1dWX2VSb0NSM01RQXZEX0J3RQ..*_gcl_au*Nzg3MDY4MjQyLjE3ODc3MTIwOTM.*_ga*MTkxNjcyODEzOS4xNzc4NzAyMDg0*_ga_QLK8WFHNK9*czE3ODg3NjYyNTUkbzMkZzEkdDE3ODg3NjYzMDgkajckbDAkaDgxOTA2ODM5NQ.." alt="Laptops">
+	            </div>
+	            <span class="ebay-category-name">Laptops (Máy tính xách tay)</span>
+	        </a>
+
+	        <a href="/category/components" class="ebay-category-item">
+	            <div class="ebay-category-image-box">
+	                <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=250&auto=format&fit=crop" alt="Computer parts">
+	            </div>
+	            <span class="ebay-category-name">Linh kiện máy tính</span>
+	        </a>
+
+	        <a href="/category/smartphones" class="ebay-category-item">
+	            <div class="ebay-category-image-box">
+	                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=250&auto=format&fit=crop" alt="Smartphones">
+	            </div>
+	            <span class="ebay-category-name">Điện thoại thông minh</span>
+	        </a>
+
+	        <a href="/category/tablets" class="ebay-category-item">
+	            <div class="ebay-category-image-box">
+	                <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=250&auto=format&fit=crop" alt="Tablets">
+	            </div>
+	            <span class="ebay-category-name">Máy tính bảng</span>
+	        </a>
+
+	        <a href="/category/gaming-gear" class="ebay-category-item">
+	            <div class="ebay-category-image-box">
+	                <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=250&auto=format&fit=crop" alt="Gaming Gear">
+	            </div>
+	            <span class="ebay-category-name">Thiết bị Gaming</span>
+	        </a>
+	        
+	        <a href="/category/monitors" class="ebay-category-item">
+	            <div class="ebay-category-image-box">
+	                <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=250&auto=format&fit=crop" alt="Monitors">
+	            </div>
+	            <span class="ebay-category-name">Màn hình PC</span>
+	        </a>
+	    </div>
+	</div>
+
+    <!-- Danh sách sản phẩm từ MySQL -->
+    <div class="container" id="products">
+		<h2 class="mb-4 text-center fw-bold text-secondary">Các Sản Phẩm Đang Có Trên Sàn</h2>
+
+        <div th:if="${listProducts.empty}" class="alert alert-info text-center mt-4">
+            Rất tiếc, không tìm thấy sản phẩm nào phù hợp với từ khóa "<strong th:text="${keyword}"></strong>".
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="product : ${listProducts}">
+                <div class="card card-product h-100">
+                    <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80'}" 
+                         class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">
+                    
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold" th:text="${product.productName}">Tên Sản Phẩm</h5>
+                        <p class="card-text text-muted" th:text="${product.specsDescription}">Mô tả cấu hình sản phẩm...</p>
+                        
+                        <div class="mt-auto">
+                            <a th:href="@{'/product/' + ${product.id}}" class="btn btn-primary w-100">Xem Chi Tiết & Đấu Giá</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2026 LiveTech Auction - Công nghệ phần mềm</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+	<!-- Khung CSS "Bóng bẩy" chuẩn Messenger & eBay -->
+	<style>
+		/* --- GIAO DIỆN DANH MỤC KIỂU EBAY --- */
+		.ebay-category-section {
+		    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		    margin: 40px auto;
+		}
+
+		.ebay-category-title {
+		    font-weight: 700;
+		    font-size: 24px;
+		    color: #191919;
+		    margin-bottom: 20px;
+		}
+
+		.ebay-category-container {
+		    display: flex;
+		    gap: 16px; 
+		    overflow-x: auto; 
+		    padding-bottom: 15px;
+		    scrollbar-width: none; 
+		}
+		.ebay-category-container::-webkit-scrollbar {
+		    display: none; 
+		}
+
+		.ebay-category-item {
+		    text-decoration: none !important;
+		    display: flex;
+		    flex-direction: column;
+		    min-width: 170px; 
+		    width: 170px;
+		}
+
+		.ebay-category-image-box {
+		    background-color: #f7f7f7; 
+		    border-radius: 16px; 
+		    height: 170px;
+		    width: 100%;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    padding: 20px;
+		    transition: background-color 0.2s ease;
+		}
+
+		.ebay-category-image-box img {
+		    max-width: 100%;
+		    max-height: 100%;
+		    object-fit: cover; /* Đổi thành cover để ảnh Unsplash lấp đầy đẹp hơn */
+            border-radius: 8px;
+		}
+
+		.ebay-category-item:hover .ebay-category-image-box {
+		    background-color: #ebebeb; 
+		}
+
+		.ebay-category-name {
+		    margin-top: 12px;
+		    font-size: 15px;
+		    color: #191919;
+		    font-weight: 500;
+		    text-align: left; 
+		}
+
+		.ebay-category-item:hover .ebay-category-name {
+		    text-decoration: underline; 
+		}
+        
+	    /* Khung cửa sổ chat */
+	    .messenger-window {
+	        position: fixed; bottom: 90px; right: 20px; width: 350px; height: 500px;
+	        background: #fff; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+	        display: flex; flex-direction: column; z-index: 1000; overflow: hidden;
+	        font-family: Arial, sans-serif;
+	    }
+	    
+	    .messenger-header {
+	        background: #fff; padding: 12px 15px; border-bottom: 1px solid #e5e5e5;
+	        display: flex; align-items: center; justify-content: space-between;
+	    }
+	    .messenger-header-left { display: flex; align-items: center; gap: 10px; }
+	    .bot-avatar {
+	        width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #00c6ff, #0072ff);
+	        color: white; display: flex; align-items: center; justify-content: center; font-size: 18px;
+	    }
+	    .bot-name { font-weight: bold; font-size: 15px; color: #050505; line-height: 1.2; margin: 0; }
+	    .bot-status { font-size: 12px; color: #65676B; display: flex; align-items: center; gap: 5px; margin: 0; }
+	    .status-dot { width: 8px; height: 8px; background: #31a24c; border-radius: 50%; }
+	    
+	    .messenger-body {
+	        flex-grow: 1; padding: 15px; overflow-y: auto; background: #ffffff;
+	        display: flex; flex-direction: column; gap: 12px;
+	    }
+	    
+	    .msg-bubble {
+	        max-width: 75%; padding: 10px 14px; font-size: 14.5px; line-height: 1.4; word-wrap: break-word;
+	    }
+	    
+	    .msg-bot {
+	        background: #e4e6eb; color: #050505; border-radius: 18px 18px 18px 4px; align-self: flex-start;
+	    }
+	    
+	    .msg-user {
+	        background: #0084ff; color: #fff; border-radius: 18px 18px 4px 18px; align-self: flex-end;
+	    }
+	    
+	    .msg-bubble p { margin-bottom: 0; }
+	    .msg-bubble ul { margin-bottom: 0; padding-left: 20px; }
+	    .msg-bubble strong { font-weight: bold; }
+	    
+	    .messenger-footer { padding: 10px 15px; border-top: 1px solid #e5e5e5; background: #fff; }
+	    .input-group-msg { display: flex; align-items: center; background: #f0f2f5; border-radius: 20px; padding: 5px 15px; }
+	    .input-msg { border: none; background: transparent; flex-grow: 1; padding: 8px 0; outline: none; font-size: 14.5px; }
+	    .btn-send { color: #0084ff; background: none; border: none; font-size: 20px; padding: 0 5px; cursor: pointer; transition: transform 0.2s; }
+	    .btn-send:hover { transform: scale(1.1); }
+	    
+	    #chatbot-toggle {
+	        position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+	        background: linear-gradient(135deg, #00c6ff, #0072ff); color: white;
+	        border-radius: 50%; font-size: 28px; border: none; box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+	        z-index: 1000; cursor: pointer; transition: transform 0.3s;
+	    }
+	    #chatbot-toggle:hover { transform: scale(1.1); }
+	</style>
+
+	<button id="chatbot-toggle"><i class="fa-brands fa-facebook-messenger"></i></button>
+
+	<div id="chatbot-window" class="messenger-window d-none">
+	    <div class="messenger-header">
+	        <div class="messenger-header-left">
+	            <div class="bot-avatar"><i class="fa-solid fa-robot"></i></div>
+	            <div class="bot-info">
+	                <p class="bot-name">LiveTech AI</p>
+	                <p class="bot-status"><span class="status-dot"></span> Đang hoạt động</p>
+	            </div>
+	        </div>
+	        <button id="chatbot-close" class="btn-close"></button>
+	    </div>
+	    
+	    <div class="messenger-body" id="chat-content">
+	        <div class="msg-bubble msg-bot">
+	            Xin chào! Mình là trợ lý ảo của sàn đấu giá. Bạn cần tư vấn sản phẩm nào hôm nay?
+	        </div>
+	    </div>
+	    
+	    <div class="messenger-footer">
+	        <form id="chat-form" class="input-group-msg">
+	            <input type="text" id="chat-input" class="input-msg" placeholder="Nhắn tin..." autocomplete="off" required>
+	            <button type="submit" class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+	        </form>
+	    </div>
+	</div>
+
+	<script>
+	    const chatToggle = document.getElementById('chatbot-toggle');
+	    const chatWindow = document.getElementById('chatbot-window');
+	    const chatClose = document.getElementById('chatbot-close');
+	    const chatForm = document.getElementById('chat-form');
+	    const chatInput = document.getElementById('chat-input');
+	    const chatContent = document.getElementById('chat-content');
+
+	    chatToggle.addEventListener('click', () => chatWindow.classList.toggle('d-none'));
+	    chatClose.addEventListener('click', () => chatWindow.classList.add('d-none'));
+
+	    chatForm.addEventListener('submit', async function(e) {
+	        e.preventDefault();
+	        const message = chatInput.value;
+	        if (!message.trim()) return;
+
+	        chatContent.innerHTML += `<div class="msg-bubble msg-user">${message}</div>`;
+	        chatInput.value = '';
+	        chatContent.scrollTop = chatContent.scrollHeight;
+
+	        const typingId = "typing-" + Date.now();
+	        chatContent.innerHTML += `<div id="${typingId}" class="msg-bubble msg-bot">
+	            <i class="fa-solid fa-ellipsis fa-fade"></i> AI đang suy nghĩ...
+	        </div>`;
+	        chatContent.scrollTop = chatContent.scrollHeight;
+
+	        try {
+	            const response = await fetch('/api/chat', {
+	                method: 'POST',
+	                headers: { 'Content-Type': 'application/json' },
+	                body: JSON.stringify({ message: message })
+	            });
+	            
+	            const data = await response.json();
+	            document.getElementById(typingId).remove(); 
+	            
+	            const formattedReply = marked.parse(data.reply);
+	            
+	            chatContent.innerHTML += `<div class="msg-bubble msg-bot">${formattedReply}</div>`;
+	            chatContent.scrollTop = chatContent.scrollHeight;
+	            
+	        } catch (error) {
+	            document.getElementById(typingId).remove();
+	            chatContent.innerHTML += `<div class="msg-bubble msg-bot text-danger">Kết nối bị gián đoạn. Vui lòng thử lại!</div>`;
+	        }
+	    });
+	</script>
+</body>
+</html>

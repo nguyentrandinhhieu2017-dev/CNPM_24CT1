@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh Toán Hóa Đơn - LiveTech</title>
+    <!-- Thêm Bootstrap để giao diện đẹp -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- BẠN DÁN ĐOẠN CODE HTML Ở BƯỚC 3 VÀO ĐÂY -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow border-0" style="border-radius: 15px;">
+                    <div class="card-header bg-dark text-white text-center" style="border-radius: 15px 15px 0 0;">
+                        <h4 class="mb-0">Thanh Toán Trực Tuyến</h4>
+                    </div>
+                    <div class="card-body text-center p-5">
+                        <h5 class="text-muted mb-3" th:text="${productName}">Tên sản phẩm</h5>
+                        
+                        <h2 class="text-danger fw-bold mb-2">
+                            <span th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')}">0</span> VNĐ
+                        </h2>
+                        
+                        <p class="mb-1"><strong>Ngân hàng:</strong> <span th:text="${bankAccount}">MB Bank</span></p>
+                        <p class="mb-4"><strong>Người nhận:</strong> <span th:text="${accountName}">Nguyễn Văn A</span></p>
+
+                        <!-- ẢNH MÃ QR -->
+                        <div class="p-3 border rounded mb-4 d-inline-block bg-white shadow-sm">
+                            <img th:src="${qrCodeImage}" alt="Mã QR Thanh Toán" style="width: 200px; height: 200px;">
+                        </div>
+
+                        <p class="text-muted small">Vui lòng mở app ngân hàng quét mã QR bên trên để thanh toán.</p>
+                        
+                        <div class="mt-4">
+                            <a href="/" class="btn btn-outline-secondary w-100">Quay về trang chủ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

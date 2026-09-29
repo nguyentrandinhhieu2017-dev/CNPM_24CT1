@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Thêm/Sửa Sản Phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0 fw-bold" th:text="${pageTitle}">Thêm Sản Phẩm</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/admin/products/save}" th:object="${product}" method="post">
+                            
+                            <!-- Cần có ID ẩn để Spring Boot biết là đang Sửa (nếu có ID) hay Thêm mới (nếu không có ID) -->
+                            <input type="hidden" th:field="*{id}" />
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tên Sản Phẩm:</label>
+                                <input type="text" class="form-control" th:field="*{productName}" placeholder="Nhập tên thiết bị (VD: iPhone 15 Pro Max)" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Mô tả cấu hình:</label>
+                                <textarea class="form-control" th:field="*{specsDescription}" rows="4" placeholder="Nhập thông số RAM, ROM, Chip..." required></textarea>
+                            </div>
+							
+							<div class="mb-3">
+							     <label class="form-label fw-bold">Giá khởi điểm (VNĐ):</label>
+							     <!-- Ô hiển thị cho Admin (có dấu chấm). Tự động lấy giá cũ lên nếu đang dùng tính năng Sửa -->
+							     <input type="text" class="form-control" id="displayStartPrice" 
+							          th:value="${product.startPrice != null ? #numbers.formatInteger(product.startPrice, 0, 'POINT') : ''}" 
+							          placeholder="Ví dụ: 15.000.000" required>
+							                                
+							     <!-- Ô ẩn chứa số liệu chuẩn (không dấu) để Spring Boot lưu vào Database -->
+							     <input type="hidden" th:field="*{startPrice}" id="actualStartPrice">
+							</div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Link Ảnh (URL):</label>
+                                <input type="text" class="form-control" th:field="*{imageUrl}" placeholder="Dán đường link ảnh từ trên mạng vào đây" required>
+                                <small class="text-muted">Gợi ý: Lên Google Copy Image Address dán vào đây nhé.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold w-100">Lưu Sản Phẩm</button>
+                            <div class="text-center mt-3">
+                                <a th:href="@{/admin/products}" class="text-secondary text-decoration-none">Hủy và quay lại danh sách</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script>
+	        const displayStartPrice = document.getElementById('displayStartPrice');
+	        const actualStartPrice = document.getElementById('actualStartPrice');
+
+	        // Hàm xử lý định dạng số
+	        displayStartPrice.addEventListener('input', function(e) {
+	            let rawValue = this.value.replace(/[^0-9]/g, ''); // Lọc bỏ chữ cái
+	            actualStartPrice.value = rawValue; // Gán vào ô ẩn
+	            
+	            if (rawValue !== '') {
+	                this.value = parseInt(rawValue, 10).toLocaleString('vi-VN'); // Thêm dấu chấm
+	            } else {
+	                this.value = '';
+	            }
+	        });
+
+	        // Xử lý khi trang vừa load xong (Dành cho tính năng Sửa sản phẩm)
+	        // Khi load lên, lấy giá trị đang hiển thị (có chấm) gỡ bỏ chấm và nhét vào ô ẩn
+	        if(displayStartPrice.value !== '') {
+	             actualStartPrice.value = displayStartPrice.value.replace(/[^0-9]/g, '');
+	        }
+	    </script>
+
+</body>
+</html>

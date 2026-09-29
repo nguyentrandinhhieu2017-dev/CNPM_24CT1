@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - LiveTech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header bg-success text-white text-center py-3">
+                        <h4 class="mb-0 fw-bold">Đăng Nhập Hệ Thống</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <!-- Hiển thị thông báo lỗi nếu nhập sai -->
+                        <div th:if="${error}" class="alert alert-danger text-center" role="alert" th:text="${error}"></div>
+
+                        <!-- Form gửi dữ liệu về /login -->
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tên đăng nhập:</label>
+                                <input type="text" class="form-control" name="username" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Mật khẩu:</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+							
+							<div class="text-end mb-3">
+							    <a href="/forgot-password" class="text-decoration-none small text-danger">Quên mật khẩu?</a>
+							</div>
+							
+							<!-- 🌟 Khung hiển thị thông báo (Bao gồm cả lỗi và thông báo cấp lại mật khẩu) -->
+							<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+							<div th:if="${success}" class="alert alert-success fw-bold text-center" th:text="${success}"></div>
+
+                            <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">Đăng Nhập</button>
+                            
+                            <div class="mt-4 text-center">
+                                <span class="text-muted">Chưa có tài khoản?</span>
+                                <a href="/register" class="text-decoration-none fw-bold">Đăng ký ngay</a>
+                                <br><br>
+                                <a href="/" class="text-decoration-none text-secondary">⬅ Quay lại Trang chủ</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

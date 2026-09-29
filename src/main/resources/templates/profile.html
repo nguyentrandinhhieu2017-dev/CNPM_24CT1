@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hồ Sơ Cá Nhân - LiveTech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header bg-dark text-white text-center py-3 rounded-top-4">
+                        <h4 class="mb-0">👤 Thông Tin Cá Nhân & Địa Chỉ</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                        <form action="/profile/update" method="post">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tên đăng nhập (Không thể thay đổi)</label>
+                                <input type="text" class="form-control" th:value="${user.username}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control" th:value="${user.email}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Họ và Tên</label>
+                                <input type="text" name="fullName" class="form-control" th:value="${user.fullName}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Số điện thoại</label>
+                                <input type="text" name="phone" class="form-control" th:value="${user.phone}" placeholder="Nhập số điện thoại...">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Địa chỉ giao hàng / nhận hàng</label>
+                                <textarea name="address" class="form-control" rows="3" placeholder="Nhập địa chỉ chi tiết..." th:text="${user.address}"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Lưu Thay Đổi</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center py-3 bg-white">
+                        <a href="/" class="text-decoration-none">← Quay về Trang chủ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
