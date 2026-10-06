@@ -29,12 +29,10 @@ public class HomeController {
     @Autowired
     private BidRepository bidRepository;
 
-    // Chỉ giữ lại DUY NHẤT một hàm cho đường dẫn trang chủ "/"
     @GetMapping("/")
     public String viewHomePage(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
         List<Product> listProducts;
         
-        // Xử lý tìm kiếm theo tên hoặc hashtag chính xác
         if (keyword != null && !keyword.trim().isEmpty()) {
             String kw = keyword.toLowerCase().trim();
             
@@ -50,7 +48,7 @@ public class HomeController {
         }
         
         model.addAttribute("listProducts", listProducts);
-        return "index";
+        return "user/index"; // Đã sửa
     }
 
     @GetMapping("/category/{slug}")
@@ -60,7 +58,7 @@ public class HomeController {
         model.addAttribute("listProducts", products);
         model.addAttribute("keyword", "");
         
-        return "index";
+        return "user/index"; // Đã sửa
     }
 
     @GetMapping("/product/{id}")
@@ -95,7 +93,7 @@ public class HomeController {
                 model.addAttribute("currentPrice", price); 
             }
             
-            return "product-detail";
+            return "user/product-detail"; // Đã sửa
         } else {
             return "redirect:/"; 
         }

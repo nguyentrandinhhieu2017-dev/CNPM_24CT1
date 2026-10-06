@@ -35,7 +35,7 @@ public class AdminController {
         
         List<Product> products = productRepository.findAll();
         model.addAttribute("products", products);
-        return "admin-products";
+        return "admin/admin-products";
     }
 
     // 2. Hiển thị Form thêm sản phẩm mới
@@ -45,10 +45,10 @@ public class AdminController {
         
         model.addAttribute("product", new Product());
         model.addAttribute("pageTitle", "Thêm Sản Phẩm Mới");
-        return "admin-product-form";
+        return "admin/admin-product-form";
     }
 
-    // 3. Hiển thị Form sửa sản phẩm
+ // 3. Hiển thị Form sửa sản phẩm
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!isAdmin(session)) return "redirect:/login";
@@ -57,7 +57,7 @@ public class AdminController {
             Product product = productRepository.findById(id).get();
             model.addAttribute("product", product);
             model.addAttribute("pageTitle", "Sửa Sản Phẩm (ID: " + id + ")");
-            return "admin-product-form";
+            return "admin/admin-product-form"; // Đã sửa: Thêm admin/
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy sản phẩm!");
             return "redirect:/admin/products";
