@@ -1,46 +1,648 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
-    <title>Thanh Toán Hóa Đơn - LiveTech</title>
-    <!-- Thêm Bootstrap để giao diện đẹp -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán Đơn Hàng #[[${order.id}]] - LiveTech Auction</title>
+
+    <!-- Script chặn FOUC (Flash of Unstyled Content): Áp dụng Dark/Light ngay khi load DOM -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('livetech-theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Inter & Playfair Display (Phong cách tối giản & sang trọng) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ================================================================ -->
+    <!-- BẢNG MÀU CHỦ ĐẠO: TRẮNG - ĐEN - NÂU TỐI GIẢN & SANG TRỌNG         -->
+    <!-- ================================================================ -->
+    <style>
+        :root, [data-bs-theme="light"] {
+            /* Nền & Chữ Chế độ Sáng */
+            --bg-body: #F9F9F9;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F4EFEB;
+            --bg-surface: #EFE8E0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-muted: #737373;
+            --border-color: #E2DBD2;
+            --border-subtle: #ECE6DE;
+
+            /* Tone Nâu cà phê / Nâu gỗ sang trọng */
+            --brand-brown: #6E5334;
+            --brand-brown-hover: #594128;
+            --brand-brown-subtle: #F5EFEB;
+            --brand-brown-text: #594128;
+
+            /* Giá tiền nổi bật */
+            --price-color: #B91C1C;
+            --price-bg: #FEF2F2;
+            --price-border: #FECACA;
+
+            /* Khung QR */
+            --qr-border: #6E5334;
+            --qr-bg: #FFFFFF;
+
+            /* Hiệu ứng bóng */
+            --shadow-card: 0 10px 30px rgba(110, 83, 52, 0.06);
+            --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.06);
+            --badge-timer-bg: #1A1A1A;
+            --badge-timer-color: #E6D2BC;
+            --btn-text: #FFFFFF;
+        }
+
+        [data-bs-theme="dark"] {
+            /* Nền & Chữ Chế độ Tối */
+            --bg-body: #121212;
+            --bg-card: #1E1E1E;
+            --bg-subtle: #27221C;
+            --bg-surface: #302A23;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --border-color: #383127;
+            --border-subtle: #2E271F;
+
+            /* Tone Nâu ấm Vintage */
+            --brand-brown: #A3825B;
+            --brand-brown-hover: #8C6E4A;
+            --brand-brown-subtle: #2C241B;
+            --brand-brown-text: #E5D5C3;
+
+            /* Giá tiền nổi bật Dark Mode */
+            --price-color: #F87171;
+            --price-bg: #2C1818;
+            --price-border: #522222;
+
+            /* Khung QR Dark Mode */
+            --qr-border: #A3825B;
+            --qr-bg: #1E1E1E;
+
+            /* Hiệu ứng bóng */
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.4);
+            --badge-timer-bg: #2C241B;
+            --badge-timer-color: #E5D5C3;
+            --btn-text: #121212;
+        }
+
+        /* Áp dụng Biến CSS toàn trang */
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-primary) !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* Typography sang trọng */
+        .brand-font {
+            font-family: 'Playfair Display', Georgia, serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* Thẻ Card Tối giản & Sang trọng */
+        .luxury-card {
+            background-color: var(--bg-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s ease;
+        }
+
+        /* Các khối con (Subtle Box) */
+        .box-subtle {
+            background-color: var(--bg-subtle) !important;
+            border: 1px solid var(--border-subtle) !important;
+            border-radius: 14px;
+            color: var(--text-primary) !important;
+        }
+
+        /* Khung Tổng Tiền Cần Thanh Toán (Đỏ Đậm Nổi Bật) */
+        .price-highlight-box {
+            background-color: var(--price-bg) !important;
+            border: 1.5px solid var(--price-border) !important;
+            border-radius: 16px;
+            padding: 18px 24px;
+        }
+        .price-value {
+            color: var(--price-color) !important;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* Khung hiển thị Mã QR Động */
+        .qr-frame {
+            background-color: var(--qr-bg);
+            border: 2px dashed var(--qr-border);
+            border-radius: 18px;
+            padding: 14px;
+            display: inline-block;
+            box-shadow: var(--shadow-float);
+            transition: transform 0.25s ease, border-color 0.3s ease;
+        }
+        .qr-frame:hover {
+            transform: scale(1.02);
+        }
+        .qr-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* Nút màu Nâu Brand */
+        .btn-brand-brown {
+            background-color: var(--brand-brown) !important;
+            color: var(--btn-text) !important;
+            border: none;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        .btn-brand-brown:hover {
+            background-color: var(--brand-brown-hover) !important;
+            color: var(--btn-text) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(110, 83, 52, 0.25);
+        }
+
+        /* Nút outline nâu */
+        .btn-outline-brown {
+            border: 1.5px solid var(--brand-brown) !important;
+            color: var(--brand-brown) !important;
+            background: transparent;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-brown:hover {
+            background-color: var(--brand-brown) !important;
+            color: var(--btn-text) !important;
+        }
+
+        /* Huy hiệu Nâu (Badge) */
+        .badge-brown {
+            background-color: var(--brand-brown-subtle) !important;
+            color: var(--brand-brown-text) !important;
+            border: 1px solid var(--brand-brown);
+        }
+
+        /* Đồng hồ đếm ngược */
+        .timer-badge {
+            background-color: var(--badge-timer-bg) !important;
+            color: var(--badge-timer-color) !important;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px;
+            letter-spacing: 1.5px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* ================================================================ */
+        /* NÚT CHUYỂN ĐỔI CHẾ ĐỘ SÁNG / TỐI (LIGHT/DARK MODE TOGGLE)       */
+        /* Cố định ở góc trên bên phải màn hình                            */
+        /* ================================================================ */
+        .theme-toggle-fixed {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 1080;
+            background-color: var(--bg-card);
+            border: 1.5px solid var(--brand-brown);
+            color: var(--brand-brown);
+            box-shadow: var(--shadow-float);
+            border-radius: 50px;
+            padding: 8px 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+        .theme-toggle-fixed:hover {
+            background-color: var(--brand-brown);
+            color: var(--btn-text);
+            transform: translateY(-2px);
+        }
+        .theme-toggle-fixed i {
+            font-size: 16px;
+            transition: transform 0.4s ease;
+        }
+        .theme-toggle-fixed:hover i {
+            transform: rotate(30deg);
+        }
+
+        /* Nút Sao chép nhanh */
+        .copy-pill {
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .copy-pill:hover {
+            background: var(--brand-brown);
+            color: var(--btn-text);
+            border-color: var(--brand-brown);
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body class="py-4">
 
-    <!-- BẠN DÁN ĐOẠN CODE HTML Ở BƯỚC 3 VÀO ĐÂY -->
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow border-0" style="border-radius: 15px;">
-                    <div class="card-header bg-dark text-white text-center" style="border-radius: 15px 15px 0 0;">
-                        <h4 class="mb-0">Thanh Toán Trực Tuyến</h4>
-                    </div>
-                    <div class="card-body text-center p-5">
-                        <h5 class="text-muted mb-3" th:text="${productName}">Tên sản phẩm</h5>
-                        
-                        <h2 class="text-danger fw-bold mb-2">
-                            <span th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')}">0</span> VNĐ
-                        </h2>
-                        
-                        <p class="mb-1"><strong>Ngân hàng:</strong> <span th:text="${bankAccount}">MB Bank</span></p>
-                        <p class="mb-4"><strong>Người nhận:</strong> <span th:text="${accountName}">Nguyễn Văn A</span></p>
+    <!-- ================================================================ -->
+    <!-- 1. NÚT TOGGLE CHUYỂN ĐỔI SÁNG / TỐI CỐ ĐỊNH Ở GÓC TRÊN BÊN PHẢI   -->
+    <!-- ================================================================ -->
+    <div class="theme-toggle-fixed" onclick="toggleTheme()" id="themeToggleBtn" title="Nhấp để đổi chế độ Sáng / Tối">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+        <span id="themeToggleLabel">Chế độ Tối</span>
+    </div>
 
-                        <!-- ẢNH MÃ QR -->
-                        <div class="p-3 border rounded mb-4 d-inline-block bg-white shadow-sm">
-                            <img th:src="${qrCodeImage}" alt="Mã QR Thanh Toán" style="width: 200px; height: 200px;">
+    <!-- Header điều hướng -->
+    <header class="container mb-4">
+        <div class="d-flex justify-content-between align-items-center luxury-card p-3 px-4">
+            <a class="navbar-brand d-flex align-items-center text-decoration-none" href="/">
+                <i class="fa-solid fa-bolt-lightning fs-4 me-2" style="color: var(--brand-brown);"></i>
+                <span class="fs-4 fw-bold brand-font" style="color: var(--text-primary);">
+                    LiveTech <span style="color: var(--brand-brown);">Auction</span>
+                </span>
+            </a>
+            <div class="d-flex gap-2 align-items-center pe-md-5 me-md-5">
+                <span class="badge badge-brown px-3 py-2 rounded-pill small d-none d-sm-inline-flex align-items-center">
+                    <i class="fa-solid fa-shield-halved me-1"></i>Thanh toán bảo mật VietQR
+                </span>
+                <a href="/" class="btn btn-outline-brown btn-sm rounded-pill px-3">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Trang chủ
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nội dung chính -->
+    <main class="container">
+
+        <!-- Thông báo nếu đơn hàng đã được thanh toán -->
+        <div th:if="${alreadyPaid}" class="alert alert-success d-flex align-items-center rounded-4 shadow-sm mb-4" role="alert">
+            <i class="fa-solid fa-circle-check fa-2x text-success me-3"></i>
+            <div>
+                <h5 class="alert-heading fw-bold mb-1">Đơn hàng này đã được thanh toán thành công!</h5>
+                <p class="mb-0 small">Hệ thống LiveTech đã ghi nhận số tiền của bạn. Đơn hàng đang được bộ phận vận hành chuẩn bị giao.</p>
+            </div>
+        </div>
+
+        <!-- BỐ CỤC CHIA 2 CỘT: CỘT TRÁI (THÔNG TIN ĐƠN HÀNG) / CỘT PHẢI (MÃ QR) -->
+        <div class="row g-4">
+
+            <!-- ======================================================== -->
+            <!-- CỘT TRÁI: THÔNG TIN ĐƠN HÀNG (col-lg-7)                  -->
+            <!-- ======================================================== -->
+            <div class="col-12 col-lg-7">
+                <div class="card luxury-card p-4 p-md-5 h-100">
+                    
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4" style="border-color: var(--border-color) !important;">
+                        <div>
+                            <span class="badge badge-brown mb-1">Phiếu Thanh Toán Điện Tử</span>
+                            <h3 class="fw-bold mb-0 brand-font">
+                                Đơn Hàng #<span th:text="${order.id}">123</span>
+                            </h3>
                         </div>
-
-                        <p class="text-muted small">Vui lòng mở app ngân hàng quét mã QR bên trên để thanh toán.</p>
-                        
-                        <div class="mt-4">
-                            <a href="/" class="btn btn-outline-secondary w-100">Quay về trang chủ</a>
+                        <div class="text-end">
+                            <span class="badge px-3 py-2 rounded-pill fw-bold"
+                                  style="background-color: var(--brand-brown-subtle); color: var(--brand-brown-text); border: 1px solid var(--brand-brown);"
+                                  th:if="${order.status == 'PENDING'}">
+                                <i class="fa-regular fa-clock me-1"></i>CHỜ THANH TOÁN
+                            </span>
+                            <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-bold"
+                                  th:if="${order.status == 'PAID'}">
+                                <i class="fa-solid fa-check me-1"></i>ĐÃ THANH TOÁN
+                            </span>
                         </div>
                     </div>
+
+                    <!-- 1. Sản phẩm trúng đấu giá -->
+                    <div class="box-subtle p-3 rounded-4 mb-4">
+                        <div class="row align-items-center g-3">
+                            <div class="col-auto">
+                                <img th:src="${order.product != null and order.product.imageUrl != null ? order.product.imageUrl : 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=300&q=80'}" 
+                                     alt="Ảnh sản phẩm" 
+                                     class="rounded-3 shadow-sm" 
+                                     style="width: 90px; height: 90px; object-fit: cover;">
+                            </div>
+                            <div class="col">
+                                <span class="badge badge-brown small mb-1">
+                                    <i class="fa-solid fa-trophy me-1"></i>Sản phẩm trúng đấu giá
+                                </span>
+                                <h5 class="fw-bold mb-1" th:text="${order.product != null ? order.product.productName : 'Apple MacBook Pro 16 inch'}">
+                                    Apple MacBook Pro 16 inch (M3 Max / 64GB / 1TB SSD)
+                                </h5>
+                                <p class="text-muted small mb-0" 
+                                   th:text="${order.product != null ? order.product.specsDescription : 'Chip M3 Max 16-Core, 64GB Unified RAM, 1TB SSD Space Black.'}">
+                                    Chip M3 Max 16-Core, 64GB Unified RAM, 1TB SSD Space Black.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. KHUNG NỔI BẬT TỔNG TIỀN CẦN THANH TOÁN (YÊU CẦU: CHỮ MÀU ĐỎ, IN ĐẬM) -->
+                    <div class="price-highlight-box mb-4">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <small class="fw-semibold d-block text-uppercase" style="color: var(--price-color);">
+                                    <i class="fa-solid fa-receipt me-1"></i>Tổng số tiền cần thanh toán
+                                </small>
+                                <span class="small text-muted">Đã bao gồm thuế VAT & phí bảo chứng LiveTech SafeBid</span>
+                            </div>
+                            <div class="text-end">
+                                <!-- Chữ số tiền màu đỏ nổi bật, in đậm -->
+                                <h2 class="price-value fs-1 mb-0">
+                                    <span th:text="${#numbers.formatDecimal(order.finalPrice, 0, 'COMMA', 0, 'POINT')}">52,500,000</span>
+                                    <span class="fs-4">VNĐ</span>
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Thông tin người nhận hàng -->
+                    <h6 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="fa-solid fa-truck-ramp-box me-2" style="color: var(--brand-brown);"></i>
+                        <span>Thông Tin Giao & Nhận Hàng</span>
+                    </h6>
+                    <div class="box-subtle p-3 rounded-4 mb-4 small">
+                        <div class="row g-2">
+                            <div class="col-sm-6">
+                                <span class="text-muted d-block">Họ và tên người nhận:</span>
+                                <strong th:text="${order.receiverName != null ? order.receiverName : 'Nguyễn Văn A'}">Nguyễn Văn A</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted d-block">Số điện thoại liên hệ:</span>
+                                <strong th:text="${order.receiverPhone != null ? order.receiverPhone : '0987 654 321'}">0987 654 321</strong>
+                            </div>
+                            <div class="col-12 mt-2 pt-2 border-top" style="border-color: var(--border-subtle) !important;">
+                                <span class="text-muted d-block">Địa chỉ nhận hàng chi tiết:</span>
+                                <span class="fw-semibold" th:text="${order.shippingAddress != null ? order.shippingAddress : 'Số 123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh'}">
+                                    Số 123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Cam kết bảo đảm -->
+                    <div class="mt-auto pt-3 border-top d-flex align-items-center text-muted small" style="border-color: var(--border-color) !important;">
+                        <i class="fa-solid fa-award fs-3 me-3" style="color: var(--brand-brown);"></i>
+                        <div>
+                            <strong style="color: var(--text-primary);">Bảo lãnh giao dịch LiveTech SafeBid:</strong>
+                            <p class="mb-0" style="font-size: 12px; color: var(--text-muted);">
+                                Số tiền được bảo lưu an toàn 100% trong suốt quá trình vận chuyển cho tới khi bạn nhận và kiểm tra thiết bị.
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- CỘT PHẢI: MÃ QR THANH TOÁN ĐỘNG (col-lg-5)                -->
+            <!-- ======================================================== -->
+            <div class="col-12 col-lg-5">
+                <div class="card luxury-card p-4 p-md-5 text-center h-100">
+                    
+                    <!-- Tiêu đề & Logo Ngân hàng -->
+                    <div class="mb-3">
+                        <span class="badge badge-brown px-3 py-1 rounded-pill small mb-2 d-inline-block">
+                            <i class="fa-solid fa-qrcode me-1"></i>VietQR Chuyển Khoản Tự Động 24/7
+                        </span>
+                        <h4 class="fw-bold mb-1 brand-font">Quét Mã Thanh Toán</h4>
+                        <p class="text-muted small mb-0">Hỗ trợ ứng dụng <strong>MBBank</strong> và tất cả các app Ngân hàng</p>
+                    </div>
+
+                    <!-- THẺ <img> HIỂN THỊ LINK ẢNH QR VIETQR MBBANK TỪ CONTROLLER -->
+                    <div class="my-3">
+                        <div class="qr-frame">
+                            <!-- Đường dẫn ảnh QR sinh động từ QRPaymentService (img.vietqr.io) -->
+                            <img th:src="${qrCodeUrl}" 
+                                 id="vietQrImage"
+                                 alt="Mã QR MBBank LiveTech" 
+                                 class="img-fluid qr-image" 
+                                 style="max-width: 290px; width: 100%;">
+                        </div>
+                    </div>
+
+                    <!-- Bộ đếm ngược thời gian -->
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-4">
+                        <small class="text-muted">Mã QR có hiệu lực trong:</small>
+                        <span class="timer-badge" id="countdownTimer">14:59</span>
+                    </div>
+
+                    <!-- BẢNG THÔNG TIN TÀI KHOẢN MBBANK THỤ HƯỞNG CHÍNH THỨC -->
+                    <div class="box-subtle p-3 rounded-4 text-start small mb-4">
+                        <!-- Ngân hàng -->
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color: var(--border-subtle) !important;">
+                            <span class="text-muted"><i class="fa-solid fa-building-columns me-1" style="color: var(--brand-brown);"></i>Ngân hàng:</span>
+                            <strong style="color: var(--text-primary);" th:text="${bankName != null ? bankName : 'MBBank (Ngân hàng Quân đội)'}">
+                                MBBank (Ngân hàng Quân đội)
+                            </strong>
+                        </div>
+                        
+                        <!-- Chủ tài khoản -->
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color: var(--border-subtle) !important;">
+                            <span class="text-muted"><i class="fa-solid fa-user-check me-1" style="color: var(--brand-brown);"></i>Chủ tài khoản:</span>
+                            <strong style="color: var(--text-primary);" th:text="${accountName}">NGUYEN TRAN DINH HIEU</strong>
+                        </div>
+
+                        <!-- Số tài khoản MBBank -->
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color: var(--border-subtle) !important;">
+                            <span class="text-muted"><i class="fa-solid fa-credit-card me-1" style="color: var(--brand-brown);"></i>Số tài khoản:</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <strong class="font-monospace fs-6" style="color: var(--brand-brown);" id="accountNoValue" th:text="${accountNo}">
+                                    3211230102005
+                                </strong>
+                                <button type="button" class="copy-pill" onclick="copyToClipboard('accountNoValue')">
+                                    <i class="fa-regular fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Số tiền -->
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color: var(--border-subtle) !important;">
+                            <span class="text-muted"><i class="fa-solid fa-money-bill-wave me-1" style="color: var(--brand-brown);"></i>Số tiền:</span>
+                            <strong class="font-monospace fs-6 price-value"
+                                    th:text="${#numbers.formatDecimal(order.finalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                52,500,000 đ
+                            </strong>
+                        </div>
+
+                        <!-- Nội dung chuyển khoản -->
+                        <div class="d-flex justify-content-between align-items-center pt-2">
+                            <span class="text-muted"><i class="fa-solid fa-quote-left me-1" style="color: var(--brand-brown);"></i>Nội dung CK:</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <strong class="px-2 py-1 rounded font-monospace" 
+                                        style="background-color: var(--brand-brown-subtle); color: var(--brand-brown-text); border: 1px dashed var(--brand-brown);"
+                                        id="transferContentValue" 
+                                        th:text="${transferContent}">
+                                    LTA PAY ORDER 12
+                                </strong>
+                                <button type="button" class="copy-pill" onclick="copyToClipboard('transferContentValue')">
+                                    <i class="fa-regular fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hướng dẫn quan trọng -->
+                    <div class="p-2 px-3 small mb-4 text-start rounded-3" 
+                         style="background-color: var(--brand-brown-subtle); border-left: 3px solid var(--brand-brown); color: var(--brand-brown-text);">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        <span>Giữ nguyên nội dung chuyển khoản để MBBank kích hoạt trạng thái đơn hàng tự động.</span>
+                    </div>
+
+                    <!-- Nút thao tác -->
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-brand-brown btn-lg py-3 rounded-pill shadow-sm" onclick="checkPaymentStatus()">
+                            <i class="fa-solid fa-rotate me-2"></i>Tôi Đã Chuyển Khoản Thành Công
+                        </button>
+                        <a href="/" class="btn btn-outline-brown rounded-pill py-2 small">
+                            <i class="fa-solid fa-arrow-left me-1"></i>Hủy & Quay về Trang chủ
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast thông báo đã Copy vào Clipboard -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1090">
+        <div id="copyToast" class="toast align-items-center border-0 rounded-4" 
+             style="background-color: var(--brand-brown); color: var(--btn-text);" 
+             role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fa-solid fa-circle-check me-2"></i>Đã sao chép vào bộ nhớ tạm!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     </div>
 
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript: Toggle Dark/Light, Copy Clipboard, Countdown Timer & Polling Webhook -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const orderId = /*[[${order.id}]]*/ 0;
+        const currentStatus = /*[[${order.status}]]*/ 'PENDING';
+
+        // 1. TÍNH NĂNG CHUYỂN ĐỔI CHẾ ĐỘ SÁNG / TỐI (LIGHT/DARK MODE)
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const currentTheme = htmlEl.getAttribute('data-bs-theme') || 'light';
+            const targetTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            htmlEl.setAttribute('data-bs-theme', targetTheme);
+            localStorage.setItem('livetech-theme', targetTheme);
+            updateThemeToggleUI(targetTheme);
+        }
+
+        function updateThemeToggleUI(theme) {
+            const icon = document.getElementById('themeToggleIcon');
+            const label = document.getElementById('themeToggleLabel');
+            if (theme === 'dark') {
+                icon.className = 'fa-solid fa-sun text-warning';
+                label.textContent = 'Giao diện Sáng';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+                label.textContent = 'Giao diện Tối';
+            }
+        }
+
+        // Cập nhật icon theo theme hiện tại khi trang vừa tải xong
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+            updateThemeToggleUI(currentTheme);
+        });
+
+        // 2. HÀM SAO CHÉP NHANH VÀO CLIPBOARD
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const toastEl = document.getElementById('copyToast');
+                const toast = new bootstrap.Toast(toastEl, { delay: 2200 });
+                toast.show();
+            });
+        }
+
+        // 3. ĐỒNG HỒ ĐẾM NGƯỢC 15 PHÚT
+        let timeLeft = 15 * 60;
+        const timerDisplay = document.getElementById('countdownTimer');
+        const timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.innerText = "HẾT HẠN";
+                timerDisplay.style.backgroundColor = "var(--price-color)";
+                timerDisplay.style.color = "#FFFFFF";
+            } else {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        // 4. AJAX POLLING: TỰ ĐỘNG PHÁT HIỆN KHI NGÂN HÀNG BÁO CÓ (WEBHOOK)
+        if (currentStatus === 'PENDING' && orderId > 0) {
+            const pollInterval = setInterval(() => {
+                fetch(`/api/webhook/order/${orderId}/status`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.isPaid) {
+                            clearInterval(pollInterval);
+                            alert("🎉 Chúc mừng! LiveTech đã nhận được thanh toán từ MBBank!");
+                            window.location.reload();
+                        }
+                    })
+                    .catch(() => {});
+            }, 4000);
+        }
+
+        // 5. NÚT KIỂM TRA THỦ CÔNG
+        function checkPaymentStatus() {
+            if (orderId > 0) {
+                fetch(`/api/webhook/order/${orderId}/status`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.isPaid) {
+                            alert("✅ Xác nhận thanh toán thành công! Đang chuyển hướng...");
+                            window.location.reload();
+                        } else {
+                            alert("⏳ Hệ thống đang đối soát với MBBank. Quá trình này thường mất 30 giây đến 1 phút, vui lòng kiên nhẫn nhé!");
+                        }
+                    })
+                    .catch(() => {
+                        alert("Đang kiểm tra kết nối với hệ thống ngân hàng...");
+                    });
+            }
+        }
+        /*]]>*/
+    </script>
 </body>
 </html>

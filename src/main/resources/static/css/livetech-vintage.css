@@ -1,0 +1,328 @@
+/* ==========================================================================
+   LIVETECH AUCTION - HỆ THỐNG GIAO DIỆN CHUẨN: TRẮNG - ĐEN - NÂU VINTAGE
+   Định nghĩa Design System đồng bộ dùng chung cho toàn bộ dự án Spring Boot
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+/* ==========================================================================
+   1. BẢNG MÀU CHỦ ĐẠO (CSS VARIABLES)
+   ========================================================================== */
+:root, [data-bs-theme="light"] {
+    /* Nền & Chữ Chế độ Sáng (White - Graphite) */
+    --bg-body: #F9F9F9;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F4EFEB;
+    --bg-surface: #EFE8E0;
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #737373;
+    --border-color: #E2DBD2;
+    --border-subtle: #ECE6DE;
+
+    /* Điểm nhấn thương hiệu: Nâu Cà Phê / Nâu Gỗ Sang Trọng */
+    --brand-brown: #6E5334;
+    --brand-brown-hover: #594128;
+    --brand-brown-active: #47331F;
+    --brand-brown-subtle: #F5EFEB;
+    --brand-brown-text: #594128;
+
+    /* Nút bấm & Navbar */
+    --btn-text: #FFFFFF;
+    --navbar-bg: #1A1A1A;
+    --navbar-border: #2D2721;
+
+    /* Màu giá tiền & cảnh báo */
+    --price-color: #B91C1C;
+    --price-bg: #FEF2F2;
+    --price-border: #FECACA;
+
+    /* Khung QR */
+    --qr-border: #6E5334;
+    --qr-bg: #FFFFFF;
+
+    /* Hiệu ứng bóng & Badge */
+    --shadow-card: 0 8px 24px rgba(110, 83, 52, 0.06);
+    --shadow-hover: 0 14px 32px rgba(110, 83, 52, 0.12);
+    --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --badge-timer-bg: #1A1A1A;
+    --badge-timer-color: #E6D2BC;
+}
+
+[data-bs-theme="dark"] {
+    /* Nền & Chữ Chế độ Tối (Dark - Platinum) */
+    --bg-body: #121212;
+    --bg-card: #1E1E1E;
+    --bg-subtle: #27221C;
+    --bg-surface: #302A23;
+    --text-primary: #F1F5F9;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --border-color: #383127;
+    --border-subtle: #2E271F;
+
+    /* Điểm nhấn thương hiệu: Nâu Ấm Vintage */
+    --brand-brown: #A3825B;
+    --brand-brown-hover: #8C6E4A;
+    --brand-brown-active: #785D3E;
+    --brand-brown-subtle: #2C241B;
+    --brand-brown-text: #E5D5C3;
+
+    /* Nút bấm & Navbar */
+    --btn-text: #121212;
+    --navbar-bg: #181818;
+    --navbar-border: #332B22;
+
+    /* Màu giá tiền & cảnh báo Dark Mode */
+    --price-color: #F87171;
+    --price-bg: #2C1818;
+    --price-border: #522222;
+
+    /* Khung QR Dark Mode */
+    --qr-border: #A3825B;
+    --qr-bg: #1E1E1E;
+
+    /* Hiệu ứng bóng & Badge */
+    --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 14px 32px rgba(0, 0, 0, 0.7);
+    --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.4);
+    --badge-timer-bg: #2C241B;
+    --badge-timer-color: #E5D5C3;
+}
+
+/* ==========================================================================
+   2. GLOBAL STYLING & TYPOGRAPHY
+   ========================================================================== */
+body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+}
+
+h1, h2, h3, .brand-font {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.3px;
+}
+
+/* ==========================================================================
+   3. GHI ĐÈ BOOTSTRAP: THEME TRẮNG - ĐEN - NÂU ĐỒNG BỘ
+   ========================================================================== */
+/* Navbar */
+.navbar-custom {
+    background-color: var(--navbar-bg) !important;
+    border-bottom: 1px solid var(--navbar-border);
+    transition: all 0.3s ease;
+}
+
+/* Thẻ Card */
+.card, .luxury-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 18px !important;
+    box-shadow: var(--shadow-card);
+    color: var(--text-primary) !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.3s ease;
+}
+.card:hover, .luxury-card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+/* Khối nội dung con */
+.box-subtle {
+    background-color: var(--bg-subtle) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 14px !important;
+    color: var(--text-primary) !important;
+}
+
+/* Biểu mẫu Form Input */
+.form-control, .form-select {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--brand-brown) !important;
+    box-shadow: 0 0 0 3px rgba(110, 83, 52, 0.15) !important;
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: var(--bg-subtle) !important;
+    opacity: 0.8;
+}
+.input-group-text {
+    background-color: var(--bg-subtle) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--brand-brown) !important;
+}
+
+/* Bảng Biểu (Tables) */
+.table {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+.table > :not(caption) > * > * {
+    background-color: transparent !important;
+    border-bottom-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--bg-subtle) !important;
+}
+
+/* ==========================================================================
+   4. HỆ THỐNG NÚT BẤM (BUTTONS) - TUÂN THỦ TONE NÂU & ĐEN
+   ========================================================================== */
+/* Ghi đè toàn bộ btn-primary thành Brand Brown */
+.btn-primary, .btn-brand-brown {
+    background-color: var(--brand-brown) !important;
+    border-color: var(--brand-brown) !important;
+    color: var(--btn-text) !important;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 10px 22px;
+    transition: all 0.25s ease;
+}
+.btn-primary:hover, .btn-brand-brown:hover {
+    background-color: var(--brand-brown-hover) !important;
+    border-color: var(--brand-brown-hover) !important;
+    color: var(--btn-text) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(110, 83, 52, 0.25);
+}
+
+/* Nút Outline Nâu */
+.btn-outline-primary, .btn-outline-brown {
+    border: 1.5px solid var(--brand-brown) !important;
+    color: var(--brand-brown) !important;
+    background: transparent !important;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.25s ease;
+}
+.btn-outline-primary:hover, .btn-outline-brown:hover {
+    background-color: var(--brand-brown) !important;
+    color: var(--btn-text) !important;
+    border-color: var(--brand-brown) !important;
+    transform: translateY(-1px);
+}
+
+/* Ghi đè btn-success & btn-danger sang phong cách tối giản */
+.btn-success {
+    background-color: var(--brand-brown) !important;
+    border-color: var(--brand-brown) !important;
+    color: var(--btn-text) !important;
+    border-radius: 50px;
+}
+.btn-success:hover {
+    background-color: var(--brand-brown-hover) !important;
+    border-color: var(--brand-brown-hover) !important;
+}
+
+/* ==========================================================================
+   5. HUY HIỆU (BADGES) & GIÁ TIỀN (PRICE)
+   ========================================================================== */
+.badge-brown {
+    background-color: var(--brand-brown-subtle) !important;
+    color: var(--brand-brown-text) !important;
+    border: 1px solid var(--brand-brown);
+    font-weight: 600;
+}
+
+.price-highlight-box {
+    background-color: var(--price-bg) !important;
+    border: 1.5px solid var(--price-border) !important;
+    border-radius: 16px;
+    padding: 18px 24px;
+}
+.price-value {
+    color: var(--price-color) !important;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.timer-badge {
+    background-color: var(--badge-timer-bg) !important;
+    color: var(--badge-timer-color) !important;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    letter-spacing: 1.5px;
+    border: 1px solid var(--border-color);
+}
+
+/* Khung hiển thị QR */
+.qr-frame {
+    background-color: var(--qr-bg);
+    border: 2px dashed var(--qr-border);
+    border-radius: 18px;
+    padding: 14px;
+    display: inline-block;
+    box-shadow: var(--shadow-float);
+    transition: transform 0.25s ease;
+}
+.qr-frame:hover {
+    transform: scale(1.02);
+}
+
+/* ==========================================================================
+   6. NÚT CHUYỂN ĐỔI CHẾ ĐỘ SÁNG / TỐI (LIGHT/DARK MODE TOGGLE)
+   Cố định ở góc trên bên phải màn hình
+   ========================================================================== */
+.theme-toggle-fixed {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    z-index: 1080;
+    background-color: var(--bg-card);
+    border: 1.5px solid var(--brand-brown);
+    color: var(--brand-brown);
+    box-shadow: var(--shadow-float);
+    border-radius: 50px;
+    padding: 8px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+    backdrop-filter: blur(8px);
+}
+.theme-toggle-fixed:hover {
+    background-color: var(--brand-brown);
+    color: var(--btn-text);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(110, 83, 52, 0.25);
+}
+.theme-toggle-fixed i {
+    font-size: 15px;
+    transition: transform 0.4s ease;
+}
+.theme-toggle-fixed:hover i {
+    transform: rotate(30deg);
+}
+
+/* Tiện ích sao chép nhanh */
+.copy-pill {
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+.copy-pill:hover {
+    background: var(--brand-brown);
+    color: var(--btn-text);
+    border-color: var(--brand-brown);
+}

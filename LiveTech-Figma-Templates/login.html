@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - LiveTech Auction</title>
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('livetech-theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root, [data-bs-theme="light"] {
+            --bg-body: #F9F9F9;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F4EFEB;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-muted: #737373;
+            --border-color: #E2DBD2;
+            --border-subtle: #ECE6DE;
+            --brand-brown: #6E5334;
+            --brand-brown-hover: #594128;
+            --brand-brown-subtle: #F5EFEB;
+            --brand-brown-text: #594128;
+            --shadow-card: 0 10px 30px rgba(110, 83, 52, 0.06);
+            --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --btn-text: #FFFFFF;
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-body: #121212;
+            --bg-card: #1E1E1E;
+            --bg-subtle: #27221C;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --border-color: #383127;
+            --border-subtle: #2E271F;
+            --brand-brown: #A3825B;
+            --brand-brown-hover: #8C6E4A;
+            --brand-brown-subtle: #2C241B;
+            --brand-brown-text: #E5D5C3;
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.4);
+            --btn-text: #121212;
+        }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-primary) !important;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .brand-font { font-family: 'Playfair Display', Georgia, serif; }
+
+        .luxury-card {
+            background-color: var(--bg-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .btn-brand-brown {
+            background-color: var(--brand-brown) !important;
+            color: var(--btn-text) !important;
+            border: none;
+            font-weight: 600;
+            border-radius: 50px;
+        }
+        .btn-brand-brown:hover {
+            background-color: var(--brand-brown-hover) !important;
+            color: var(--btn-text) !important;
+        }
+
+        .theme-toggle-fixed {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 1080;
+            background-color: var(--bg-card);
+            border: 1.5px solid var(--brand-brown);
+            color: var(--brand-brown);
+            box-shadow: var(--shadow-float);
+            border-radius: 50px;
+            padding: 8px 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+        .theme-toggle-fixed:hover {
+            background-color: var(--brand-brown);
+            color: var(--btn-text);
+        }
+    </style>
+</head>
+<body class="min-vh-100 d-flex align-items-center py-5">
+
+    <div class="theme-toggle-fixed" onclick="toggleTheme()" id="themeToggleBtn">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+        <span id="themeToggleLabel">Chế độ Tối</span>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+                <div class="card luxury-card p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="p-3 d-inline-flex rounded-circle mb-3" style="background-color: var(--brand-brown-subtle); color: var(--brand-brown);">
+                            <i class="fa-solid fa-bolt-lightning fs-2"></i>
+                        </div>
+                        <h2 class="fw-bold mb-1 brand-font">Đăng Nhập</h2>
+                        <p class="text-muted small mb-0">Hệ thống đấu giá thiết bị công nghệ LiveTech</p>
+                    </div>
+
+                    <form action="/login" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-secondary">
+                                <i class="fa-solid fa-user me-1" style="color: var(--brand-brown);"></i>Tên đăng nhập
+                            </label>
+                            <input type="text" class="form-control form-control-lg fs-6" name="username" value="nguyenvana" placeholder="Nhập tên đăng nhập..." required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-secondary">
+                                <i class="fa-solid fa-lock me-1" style="color: var(--brand-brown);"></i>Mật khẩu
+                            </label>
+                            <input type="password" class="form-control form-control-lg fs-6" name="password" value="LiveTech@2026" placeholder="Nhập mật khẩu..." required>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+                                <label class="form-check-label small text-muted" for="rememberMe">Ghi nhớ</label>
+                            </div>
+                            <a href="forgot-password.html" class="text-decoration-none small" style="color: var(--brand-brown); font-weight: 600;">
+                                Quên mật khẩu?
+                            </a>
+                        </div>
+
+                        <button type="submit" class="btn btn-brand-brown btn-lg w-100 py-3 shadow-sm mb-3">
+                            <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>Đăng Nhập
+                        </button>
+                        
+                        <div class="mt-4 pt-3 text-center border-top" style="border-color: var(--border-subtle) !important;">
+                            <span class="text-muted small">Chưa có tài khoản?</span>
+                            <a href="register.html" class="text-decoration-none fw-bold ms-1" style="color: var(--brand-brown);">
+                                Đăng ký ngay
+                            </a>
+                            <div class="mt-3">
+                                <a href="index.html" class="text-decoration-none text-muted small">
+                                    <i class="fa-solid fa-arrow-left me-1"></i>Quay lại Trang chủ
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const currentTheme = htmlEl.getAttribute('data-bs-theme') || 'light';
+            const targetTheme = currentTheme === 'light' ? 'dark' : 'light';
+            htmlEl.setAttribute('data-bs-theme', targetTheme);
+            localStorage.setItem('livetech-theme', targetTheme);
+            updateThemeToggleUI(targetTheme);
+        }
+        function updateThemeToggleUI(theme) {
+            const icon = document.getElementById('themeToggleIcon');
+            const label = document.getElementById('themeToggleLabel');
+            if (theme === 'dark') {
+                icon.className = 'fa-solid fa-sun text-warning';
+                label.textContent = 'Giao diện Sáng';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+                label.textContent = 'Giao diện Tối';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+            updateThemeToggleUI(currentTheme);
+        });
+    </script>
+</body>
+</html>

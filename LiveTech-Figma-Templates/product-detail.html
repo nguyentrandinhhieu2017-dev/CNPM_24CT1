@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Sản Phẩm & Đấu Giá - LiveTech Auction</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .main-product-img {
+            max-height: 480px;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+        .price-highlight {
+            color: #dc3545;
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .timer-badge {
+            background-color: #212529;
+            color: #ffc107;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .bid-avatar {
+            width: 38px;
+            height: 38px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4 d-flex align-items-center" href="index.html">
+                <i class="fa-solid fa-bolt-lightning text-warning me-2"></i>
+                <span>LiveTech<span class="text-warning">Auction</span></span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="index.html" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Trang chủ
+                </a>
+                <a href="profile.html" class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
+                    <i class="fa-solid fa-user me-1"></i>Tài khoản
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-bottom py-2">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 small">
+                    <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted">Laptop & Máy tính</a></li>
+                    <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">MacBook Pro 16 inch</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Product Detail & Auction Section -->
+    <div class="container my-5">
+        <div class="row g-4 g-lg-5">
+            
+            <!-- Cột trái: Ảnh sản phẩm (col-md-6) -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden p-3 bg-white mb-4">
+                    <!-- Ảnh chính -->
+                    <div class="position-relative text-center">
+                        <img 
+                            src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1000&q=80" 
+                            class="img-fluid w-100 main-product-img shadow-sm" 
+                            alt="MacBook Pro 16 inch M3 Max">
+                        <span class="position-absolute top-0 start-0 m-3 badge bg-danger fs-6 px-3 py-2 rounded-pill shadow">
+                            <i class="fa-solid fa-fire me-1"></i>ĐANG ĐẤU GIÁ
+                        </span>
+                    </div>
+
+                    <!-- Ảnh thumbnails nhỏ -->
+                    <div class="row g-2 mt-3">
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=200&q=80" class="img-thumbnail rounded-3 border-primary border-2" alt="Thumb 1">
+                        </div>
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=200&q=80" class="img-thumbnail rounded-3" alt="Thumb 2">
+                        </div>
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=200&q=80" class="img-thumbnail rounded-3" alt="Thumb 3">
+                        </div>
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=200&q=80" class="img-thumbnail rounded-3" alt="Thumb 4">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng thông số kỹ thuật -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-microchip text-primary me-2"></i>Thông Số Kỹ Thuật</h5>
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted">Bộ vi xử lý (CPU):</span>
+                            <strong>Apple M3 Max (16-Core CPU, 40-Core GPU)</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted">Bộ nhớ RAM:</span>
+                            <strong>64GB Unified Memory</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted">Ổ cứng lưu trữ:</span>
+                            <strong>1TB PCIe NVMe SSD</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted">Màn hình:</span>
+                            <strong>16.2 inch Liquid Retina XDR (3456 x 2234) 120Hz</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted">Tình trạng máy:</span>
+                            <strong class="text-success">Like New 99% - Fullbox chính hãng SA/A</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Cột phải: Thông tin đấu giá (col-md-6) -->
+            <div class="col-12 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 bg-white">
+                    
+                    <!-- Nhãn danh mục & kiểm định -->
+                    <div class="d-flex gap-2 mb-2">
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill small">
+                            <i class="fa-solid fa-laptop me-1"></i>Laptop Cao Cấp
+                        </span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill small">
+                            <i class="fa-solid fa-circle-check me-1"></i>Kiểm định 100%
+                        </span>
+                    </div>
+
+                    <!-- Tên sản phẩm -->
+                    <h2 class="fw-bold text-dark mb-2">MacBook Pro 16 inch (M3 Max / 64GB / 1TB SSD)</h2>
+                    <p class="text-muted small mb-4">Mã phiên đấu giá: <strong>#LIVETECH-MBP16-2026</strong> | Người bán uy tín: <strong>Apple Store Flagship</strong></p>
+
+                    <!-- Khung Bộ đếm ngược thời gian (Countdown Timer) -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted d-block fw-semibold mb-1">
+                                    <i class="fa-regular fa-clock me-1 text-danger"></i>Thời gian đấu giá còn lại:
+                                </small>
+                                <div class="d-flex gap-2 text-center">
+                                    <div class="timer-badge">
+                                        <span class="fs-5 d-block">02</span>
+                                        <small class="opacity-75" style="font-size: 10px;">NGÀY</small>
+                                    </div>
+                                    <div class="timer-badge">
+                                        <span class="fs-5 d-block">14</span>
+                                        <small class="opacity-75" style="font-size: 10px;">GIỜ</small>
+                                    </div>
+                                    <div class="timer-badge">
+                                        <span class="fs-5 d-block">35</span>
+                                        <small class="opacity-75" style="font-size: 10px;">PHÚT</small>
+                                    </div>
+                                    <div class="timer-badge">
+                                        <span class="fs-5 d-block">18</span>
+                                        <small class="opacity-75" style="font-size: 10px;">GIÂY</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-dark px-3 py-2 rounded-pill">
+                                    <i class="fa-solid fa-users me-1 text-warning"></i>38 lượt đấu
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giá nổi bật màu đỏ -->
+                    <div class="mb-4">
+                        <span class="text-secondary small d-block mb-1">Giá cao nhất hiện tại:</span>
+                        <div class="price-highlight">
+                            52.500.000 <span class="fs-4 text-dark fw-bold">VNĐ</span>
+                        </div>
+                        <div class="d-flex gap-3 text-muted small mt-2">
+                            <span>Giá khởi điểm: <strong>45.000.000 đ</strong></span>
+                            <span>•</span>
+                            <span>Bước giá tối thiểu: <strong class="text-primary">+500.000 đ</strong></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Form nhập giá đấu & nút Đặt giá ngay -->
+                    <form action="checkout.html" method="get" class="mb-4">
+                        <label for="bidAmount" class="form-label fw-bold text-dark">
+                            <i class="fa-solid fa-gavel me-1 text-danger"></i>Nhập mức giá bạn muốn trả:
+                        </label>
+                        <div class="input-group input-group-lg mb-3">
+                            <input 
+                                type="text" 
+                                class="form-control fw-bold text-danger border-2" 
+                                id="bidAmount" 
+                                name="bidAmount" 
+                                value="53.000.000" 
+                                placeholder="Tối thiểu: 53.000.000">
+                            <span class="input-group-text bg-light fw-bold">VNĐ</span>
+                        </div>
+
+                        <!-- Gợi ý bước giá nhanh -->
+                        <div class="d-flex gap-2 mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill">+ 500.000 đ</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill">+ 1.000.000 đ</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill">+ 2.000.000 đ</button>
+                        </div>
+
+                        <!-- Nút "Đặt giá ngay" -->
+                        <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold shadow py-3">
+                            <i class="fa-solid fa-gavel me-2"></i>ĐẶT GIÁ NGAY
+                        </button>
+                        <small class="text-muted d-block text-center mt-2">
+                            <i class="fa-solid fa-shield-halved text-success me-1"></i>Đặt giá tự động kích hoạt bảo chứng LiveTech SafeBid
+                        </small>
+                    </form>
+
+                    <!-- Danh sách lịch sử đấu giá bên dưới -->
+                    <div class="mt-4 pt-3 border-top">
+                        <h6 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-list-ol text-primary me-2"></i>Lịch Sử Đấu Giá Gần Nhất</span>
+                            <span class="badge bg-success-subtle text-success small">Real-time</span>
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 small">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Người đấu giá</th>
+                                        <th scope="col">Mức giá</th>
+                                        <th scope="col">Thời gian</th>
+                                        <th scope="col">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-success">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" class="bid-avatar" alt="Avatar">
+                                                <span class="fw-bold">Nguyễn Văn A (Bạn)</span>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold text-danger">52.500.000 đ</td>
+                                        <td class="text-muted">1 phút trước</td>
+                                        <td><span class="badge bg-success">Dẫn đầu</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=100&q=80" class="bid-avatar" alt="Avatar">
+                                                <span>trung_tech88</span>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold text-dark">52.000.000 đ</td>
+                                        <td class="text-muted">5 phút trước</td>
+                                        <td><span class="badge bg-secondary">Bị vượt</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="bid-avatar" alt="Avatar">
+                                                <span>hoang_macbook</span>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold text-dark">51.500.000 đ</td>
+                                        <td class="text-muted">12 phút trước</td>
+                                        <td><span class="badge bg-secondary">Bị vượt</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" class="bid-avatar" alt="Avatar">
+                                                <span>duy_auction99</span>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold text-dark">50.000.000 đ</td>
+                                        <td class="text-muted">30 phút trước</td>
+                                        <td><span class="badge bg-secondary">Bị vượt</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center small text-secondary">
+            <p class="mb-0">© 2026 LiveTech Auction Platform - Nền tảng đấu giá công nghệ số 1 Việt Nam</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,213 +1,251 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Sản Phẩm & Đấu Giá - LiveTech</title>
+    <title th:text="${product.productName + ' - LiveTech Auction'}">Chi Tiết Sản Phẩm & Đấu Giá - LiveTech</title>
+
+    <!-- Script chống chớp sáng (Anti-FOUC) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('livetech-theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            }
+        })();
+    </script>
+
+    <!-- Bootstrap 5.3 CDN & Font Awesome 6 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Đồng Bộ Toàn Dự Án: Trắng - Đen - Nâu Vintage -->
+    <link rel="stylesheet" th:href="@{/css/livetech-vintage.css}" href="/css/livetech-vintage.css">
+
     <style>
-        body { background-color: #f8f9fa; }
         .product-img {
-            max-height: 400px;
+            max-height: 480px;
             object-fit: cover;
-            border-radius: 12px;
-        }
-        .auction-card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            padding: 24px;
+            border-radius: 16px;
         }
         .price-highlight {
-            color: #dc3545;
-            font-size: 2rem;
-            font-weight: 700;
+            color: var(--price-color);
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- NÚT CHUYỂN ĐỔI CHẾ ĐỘ SÁNG / TỐI CỐ ĐỊNH GÓC PHẢI TRÊN -->
+    <div class="theme-toggle-fixed" onclick="toggleTheme()" id="themeToggleBtn" title="Chuyển đổi giao diện Sáng / Tối">
+        <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+        <span id="themeToggleLabel">Chế độ Tối</span>
+    </div>
+
+    <!-- Navigation Bar Đồng Bộ Tone Tối Giản -->
+    <nav class="navbar navbar-expand-lg navbar-custom py-3 sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">⚡ LiveTech Auction</a>
-            <a href="/" class="btn btn-outline-light btn-sm">⬅ Quay lại Trang chủ</a>
+            <a class="navbar-brand d-flex align-items-center text-decoration-none" href="/">
+                <i class="fa-solid fa-bolt-lightning fs-4 me-2" style="color: var(--brand-brown);"></i>
+                <span class="fs-4 fw-bold brand-font text-white">
+                    LiveTech <span style="color: var(--brand-brown);">Auction</span>
+                </span>
+            </a>
+            <div class="d-flex gap-2 align-items-center pe-md-5 me-md-5">
+                <a href="/" class="btn btn-outline-brown btn-sm rounded-pill px-3 text-white">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Trang chủ
+                </a>
+                <a href="/profile" class="btn btn-brand-brown btn-sm rounded-pill px-3">
+                    <i class="fa-solid fa-user me-1"></i>Hồ sơ
+                </a>
+            </div>
         </div>
     </nav>
 
+    <!-- Chi tiết sản phẩm & Đấu giá -->
     <div class="container my-5">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80'}" 
-                     class="img-fluid w-100 product-img shadow-sm" alt="Ảnh sản phẩm">
+        <div class="row g-4 g-lg-5">
+            
+            <!-- Cột trái: Ảnh sản phẩm (col-md-6) -->
+            <div class="col-12 col-md-6">
+                <div class="card luxury-card p-3 mb-4 text-center">
+                    <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80'}" 
+                         class="img-fluid w-100 product-img shadow-sm" alt="Ảnh sản phẩm">
+                </div>
+
+                <!-- Bảng thông số kỹ thuật -->
+                <div class="box-subtle p-4 rounded-4">
+                    <h5 class="fw-bold mb-3 brand-font">
+                        <i class="fa-solid fa-microchip me-2" style="color: var(--brand-brown);"></i>Mô Tả & Thông Số Thiết Bị
+                    </h5>
+                    <p class="small text-muted mb-0" th:text="${product.specsDescription}">
+                        Thông số kỹ thuật sản phẩm chi tiết...
+                    </p>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="auction-card">
-                    <h2 class="fw-bold mb-3" th:text="${product.productName}">Tên Sản Phẩm</h2>
-                    <p class="text-muted" th:text="${product.specsDescription}">Thông số chi tiết sản phẩm...</p>
+            <!-- Cột phải: Thông tin đấu giá (col-md-6) -->
+            <div class="col-12 col-md-6">
+                <div class="card luxury-card p-4 p-md-5">
                     
-                    <hr>
-
-                    <div class="mb-3">
-                        <span class="text-secondary d-block">Giá cao nhất hiện tại:</span>
-                        <div class="price-highlight" th:text="${#numbers.formatInteger(currentPrice, 0, 'POINT')} + ' VNĐ'"></div>
+                    <span class="badge badge-brown px-3 py-1 rounded-pill small mb-2 d-inline-block">
+                        <i class="fa-solid fa-gavel me-1"></i>Phiên Đấu Giá Trực Tiếp
+                    </span>
+                    <h2 class="fw-bold mb-2 brand-font" th:text="${product.productName}">Tên Sản Phẩm</h2>
+                    <p class="text-muted small mb-4">Sản phẩm chính hãng đã qua kiểm định LiveTech SafeCheck</p>
+                    
+                    <!-- Khung Giá cao nhất hiện tại (Đỏ Đậm Vintage) -->
+                    <div class="price-highlight-box mb-4">
+                        <small class="text-muted d-block text-uppercase fw-semibold mb-1">
+                            <i class="fa-solid fa-trophy me-1" style="color: var(--brand-brown);"></i>Giá cao nhất hiện tại:
+                        </small>
+                        <div class="price-highlight" th:text="${#numbers.formatInteger(currentPrice, 0, 'POINT')} + ' VNĐ'">
+                            52.500.000 VNĐ
+                        </div>
                     </div>
 
-                    <div class="alert alert-info py-2" role="alert">
-                        ⏱️ Bước giá tối thiểu: <strong>100.000 đ</strong>
+                    <!-- Bước giá -->
+                    <div class="box-subtle p-3 mb-4 rounded-3 d-flex justify-content-between align-items-center small">
+                        <span><i class="fa-solid fa-arrow-trend-up me-2" style="color: var(--brand-brown);"></i>Bước giá tối thiểu:</span>
+                        <strong style="color: var(--brand-brown);">+100.000 đ</strong>
                     </div>
 
-                    <div th:if="${success}" class="alert alert-success fw-bold text-center" role="alert" th:text="${success}"></div>
-                    <div th:if="${error}" class="alert alert-danger fw-bold text-center" role="alert" th:text="${error}"></div>
+                    <!-- Thông báo kết quả đấu giá -->
+                    <div th:if="${success}" class="alert alert-success fw-bold text-center small py-2 rounded-3" role="alert" th:text="${success}"></div>
+                    <div th:if="${error}" class="alert alert-danger fw-bold text-center small py-2 rounded-3" role="alert" th:text="${error}"></div>
 
-                    <form id="bid-form" th:action="@{/place-bid}" method="post" class="mt-4">
+                    <!-- Form Đặt Giá -->
+                    <form id="bid-form" th:action="@{/place-bid}" method="post" class="mt-3">
                         <input type="hidden" name="productId" th:value="${product.id}" />
                         
                         <div class="mb-3">
-                            <label for="gia_hien_thi" class="form-label fw-bold">Nhập mức giá bạn muốn đặt (VNĐ):</label>
-                            
-                            <input type="text" class="form-control form-control-lg" id="gia_hien_thi" placeholder="Ví dụ: 5.200.000" required autocomplete="off">
-                            
+                            <label for="gia_hien_thi" class="form-label fw-bold small text-secondary">
+                                Nhập mức giá bạn muốn đặt (VNĐ):
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text"><i class="fa-solid fa-gavel"></i></span>
+                                <input type="text" class="form-control fw-bold fs-5" id="gia_hien_thi" placeholder="Ví dụ: 5.200.000" required autocomplete="off">
+                                <span class="input-group-text fw-bold">VNĐ</span>
+                            </div>
                             <input type="hidden" name="bidAmount" id="gia_thuc_te">
                         </div>
 						
 						<!-- Khung hiển thị đếm ngược thời gian -->
-						<div th:if="${endTime != null}" class="alert alert-warning text-center mt-3 shadow-sm border-0" style="border-radius: 12px;">
-						    <h5 class="fw-bold mb-2 text-dark">⏳ Thời gian đấu giá còn lại:</h5>
-						    
-						    <!-- Nơi JS sẽ ghi đè thời gian vào -->
-						    <div id="countdown-timer" class="display-6 fw-bold text-danger mb-3">
+						<div th:if="${endTime != null}" class="box-subtle text-center p-3 mb-4 rounded-4">
+						    <small class="text-muted d-block fw-semibold mb-1">
+                                <i class="fa-regular fa-clock me-1 text-danger"></i>Thời gian đấu giá còn lại:
+                            </small>
+						    <div id="countdown-timer" class="display-6 fw-bold mb-2 brand-font price-value">
 						        Đang đồng bộ...
 						    </div>
-						    
-						    <div class="badge bg-primary fs-6 px-3 py-2 rounded-pill">
-						        <i class="fa-solid fa-users"></i> Đang có <span th:text="${participantCount}">0</span> người tranh giá
-						    </div>
-						    
-						    <!-- Biến ẩn chứa dữ liệu thời gian để JS đọc -->
+						    <span class="badge badge-brown px-3 py-1 rounded-pill small">
+						        <i class="fa-solid fa-users me-1"></i>Đang có <span th:text="${participantCount}">0</span> người tranh giá
+						    </span>
 						    <input type="hidden" id="auction-end-time" th:value="${endTime}">
 						</div>
                         
-                        <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold">
-                            🔨 Đặt Giá Ngay
+                        <!-- Nút Đặt Giá Tone Nâu Brand -->
+                        <button type="submit" id="btn-place-bid" class="btn btn-brand-brown btn-lg w-100 py-3 shadow-sm mb-2">
+                            <i class="fa-solid fa-gavel me-2"></i>ĐẶT GIÁ NGAY
                         </button>
                     </form>
 
+                    <!-- Danh sách Lịch sử đấu giá -->
                     <div class="mt-5" th:if="${listBids != null and !listBids.isEmpty()}">
-                        <h5 class="fw-bold text-secondary mb-3">📊 Lịch Sử Đấu Giá</h5>
-                        <ul class="list-group list-group-flush border-top">
-                            <li class="list-group-item d-flex justify-content-between align-items-center py-3" th:each="bid, iterStat : ${listBids}">
+                        <h5 class="fw-bold mb-3 brand-font d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-list-ol me-2" style="color: var(--brand-brown);"></i>Lịch Sử Đấu Giá</span>
+                            <span class="badge badge-brown small">Real-time</span>
+                        </h5>
+                        <ul class="list-group list-group-flush border-top" style="border-color: var(--border-color) !important;">
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3 bg-transparent" th:each="bid, iterStat : ${listBids}">
                                 <div>
-                                    <span th:if="${iterStat.index == 0}" class="badge bg-warning text-dark me-2">Top 1</span>
+                                    <span th:if="${iterStat.index == 0}" class="badge badge-brown me-2">Top 1</span>
                                     <strong th:text="${bid.user.fullName}">Tên người dùng</strong>
                                 </div>
-                                <span class="text-danger fw-bold" th:text="${#numbers.formatInteger(bid.bidAmount, 0, 'POINT')} + ' đ'"></span>
+                                <span class="price-value fw-bold" th:text="${#numbers.formatInteger(bid.bidAmount, 0, 'POINT')} + ' đ'"></span>
                             </li>
                         </ul>
                     </div>
-                    <div class="mt-5 text-center text-muted" th:if="${listBids == null or listBids.isEmpty()}">
-                        <p>Chưa có ai đặt giá cho sản phẩm này. Hãy là người đầu tiên!</p>
+                    
+                    <div class="mt-4 text-center text-muted small" th:if="${listBids == null or listBids.isEmpty()}">
+                        <p class="mb-0"><i class="fa-solid fa-hourglass-start me-1"></i>Chưa có ai đặt giá cho sản phẩm này. Hãy là người đầu tiên!</p>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-4 mt-5">
-        <div class="container">
-            <p class="mb-0">© 2026 LiveTech Auction - Công nghệ phần mềm </p>
+    <!-- Footer -->
+    <footer class="navbar-custom text-white text-center py-4 mt-5">
+        <div class="container small text-secondary">
+            <p class="mb-0">© 2026 LiveTech Auction Platform - Hệ thống đấu giá công nghệ trực tuyến</p>
         </div>
     </footer>
+
+    <!-- Bootstrap 5.3 & Theme Toggle Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/theme-toggle.js}" src="/js/theme-toggle.js"></script>
 	
+	<!-- Thư viện WebSocket Real-time -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	
 	<script>
-	    // 1. Lấy ID sản phẩm hiện tại từ ô input ẩn trong form
 	    const currentProductId = document.querySelector('input[name="productId"]').value;
-	    
-	    // 2. Tạo kết nối đường hầm đến Spring Boot
 	    const socket = new SockJS('/ws');
 	    const stompClient = Stomp.over(socket);
-	    
-	    // Tắt log của Stomp cho đỡ rối Console
 	    stompClient.debug = null; 
 
 		stompClient.connect({}, function(frame) {
-		        console.log("Đã kết nối Real-time thành công!");
-		        
-		        // Đăng ký "nghe" đúng kênh của sản phẩm này
 		        stompClient.subscribe('/topic/bids/' + currentProductId, function(messageOutput) {
-		            
 		            const data = JSON.parse(messageOutput.body);
-		            const formattedPrice = new Intl.NumberFormat('vi-VN').format(data.newPrice) + ' đ'; // Định dạng tiền
+		            const formattedPrice = new Intl.NumberFormat('vi-VN').format(data.newPrice) + ' đ';
 		            
-		            // ==========================================
-		            // 1. CẬP NHẬT GIÁ LỚN (Đã làm ở bước trước)
-		            // ==========================================
 		            const priceElement = document.querySelector('.price-highlight');
 		            if (priceElement) {
 		                priceElement.innerText = formattedPrice;
-		                // Hiệu ứng nháy màu
-		                priceElement.style.color = '#00c6ff';
-		                priceElement.style.transform = 'scale(1.1)';
+		                priceElement.style.transform = 'scale(1.08)';
 		                setTimeout(() => {
-		                    priceElement.style.color = '#dc3545';
 		                    priceElement.style.transform = 'scale(1)';
-		                }, 500);
+		                }, 400);
 		            }
 
-		            // ==========================================
-		            // 2. CẬP NHẬT LỊCH SỬ ĐẤU GIÁ REAL-TIME
-		            // ==========================================
 		            let historyList = document.querySelector('ul.list-group');
-
-		            // Trường hợp A: Nếu chưa có ai đặt giá (Danh sách chưa tồn tại)
 		            if (!historyList) {
-		                // Xóa câu "Chưa có ai đặt giá..."
 		                const emptyMsgDiv = document.querySelector('.text-center.text-muted');
 		                if (emptyMsgDiv) emptyMsgDiv.remove();
 
-		                // Dựng lên cái khung danh sách mới
 		                const historyContainer = document.createElement('div');
 		                historyContainer.className = 'mt-5';
 		                historyContainer.innerHTML = `
-		                    <h5 class="fw-bold text-secondary mb-3">📊 Lịch Sử Đấu Giá</h5>
+		                    <h5 class="fw-bold mb-3 brand-font d-flex justify-content-between align-items-center">
+                                <span><i class="fa-solid fa-list-ol me-2" style="color: var(--brand-brown);"></i>Lịch Sử Đấu Giá</span>
+                                <span class="badge badge-brown small">Real-time</span>
+                            </h5>
 		                    <ul class="list-group list-group-flush border-top"></ul>
 		                `;
-		                // Tìm form đặt giá và chèn danh sách lịch sử vào ngay bên dưới nó
 		                document.getElementById('bid-form').insertAdjacentElement('afterend', historyContainer);
 		                historyList = historyContainer.querySelector('ul');
 		            }
 
-		            // Thu hồi danh hiệu "Top 1" của người cũ (Xóa huy hiệu vàng)
-		            const oldTop1Badge = historyList.querySelector('.badge.bg-warning');
+		            const oldTop1Badge = historyList.querySelector('.badge.badge-brown');
 		            if (oldTop1Badge) oldTop1Badge.remove();
 
-		            // Tạo một thẻ dòng <li> mới tinh cho người vừa đặt giá
 		            const newLi = document.createElement('li');
-		            newLi.className = 'list-group-item d-flex justify-content-between align-items-center py-3';
-		            
-		            // Tô màu nền xanh nhạt cho dòng mới để gây chú ý, sau 1.5 giây thì mờ đi
-		            newLi.style.backgroundColor = '#e0f7fa'; 
-		            newLi.style.transition = 'background-color 1.5s ease';
-
+		            newLi.className = 'list-group-item d-flex justify-content-between align-items-center py-3 bg-transparent';
 		            newLi.innerHTML = `
 		                <div>
-		                    <span class="badge bg-warning text-dark me-2">Top 1</span>
+		                    <span class="badge badge-brown me-2">Top 1</span>
 		                    <strong>${data.bidderName}</strong>
 		                </div>
-		                <span class="text-danger fw-bold">${formattedPrice}</span>
+		                <span class="price-value fw-bold">${formattedPrice}</span>
 		            `;
-
-		            // Chèn dòng lịch sử mới này lên TRÊN CÙNG của danh sách
 		            historyList.prepend(newLi);
-
-		            // Đưa màu nền về lại màu trắng (trong suốt)
-		            setTimeout(() => { 
-		                newLi.style.backgroundColor = 'transparent'; 
-		            }, 100); 
-		            // ==========================================
 		        });
 		    });
 	</script>
@@ -217,20 +255,15 @@
 	    const thucTe = document.getElementById('gia_thuc_te');
 
 	    if (hienThi && thucTe) {
-	        // 1. KHI ĐANG GÕ: Để yên cho người dùng gõ, chỉ ngầm lưu số sạch vào ô ẩn
 	        hienThi.addEventListener('input', function(e) {
 	            thucTe.value = this.value.replace(/[^0-9]/g, '');
 	        });
-
-	        // 2. KHI GÕ XONG (Click chuột ra ngoài): Mới bắt đầu làm đẹp, chèn dấu chấm
 	        hienThi.addEventListener('blur', function() {
 	            let soSach = this.value.replace(/[^0-9]/g, '');
 	            if (soSach !== '') {
 	                this.value = soSach.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 	            }
 	        });
-
-	        // 3. KHI CLICK VÀO LẠI ĐỂ SỬA: Xóa dấu chấm đi để gõ không bị vướng
 	        hienThi.addEventListener('focus', function() {
 	            this.value = this.value.replace(/\./g, '');
 	        });
@@ -240,17 +273,13 @@
 	<script>
 	    document.addEventListener("DOMContentLoaded", function() {
 	        const endTimeInput = document.getElementById("auction-end-time");
-	        if (!endTimeInput) return; // Nếu không có phiên đấu giá thì bỏ qua
+	        if (!endTimeInput) return;
 
-	        // Lấy thời gian kết thúc từ biến ẩn
 	        const countDownDate = new Date(endTimeInput.value).getTime();
-
-	        // Cập nhật đếm ngược mỗi 1000ms (1 giây)
 	        const timerInterval = setInterval(function() {
 	            const now = new Date().getTime();
 	            const distance = countDownDate - now;
 
-	            // Tính toán Giờ, Phút, Giây (Cộng dồn số ngày vào Giờ)
 	            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) 
 	                        + Math.floor(distance / (1000 * 60 * 60 * 24)) * 24;
 	            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -259,21 +288,16 @@
 	            const timerElement = document.getElementById("countdown-timer");
 
 	            if (distance > 0) {
-	                // Hiển thị dạng: 48h 15m 30s
 	                timerElement.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
 	            } else {
-	                // Khi hết giờ
 	                clearInterval(timerInterval);
 	                timerElement.innerHTML = "ĐÃ KẾT THÚC";
-	                timerElement.classList.replace("text-danger", "text-muted");
-	                
-	                // Gợi ý: Bạn có thể dùng JS để disable (làm mờ) nút Đặt giá tại đây
+	                timerElement.classList.replace("price-value", "text-muted");
 	                const bidButton = document.getElementById("btn-place-bid");
 	                if(bidButton) bidButton.disabled = true;
 	            }
 	        }, 1000);
 	    });
 	</script>
-	
 </body>
 </html>
